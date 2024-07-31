@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "HL_online_shop/docs"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
@@ -32,8 +33,14 @@ func main() {
 	r.HandleFunc("/search/users", SearchUsers).Methods("GET")
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}), // Разрешить все домены
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+	)(r)
+
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      corsHandler,
 		Addr:         "0.0.0.0:8081",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
