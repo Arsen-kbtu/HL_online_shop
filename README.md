@@ -1,7 +1,7 @@
 # HL_online_shop
 
-HL_online_shop is a microservices-based online store management system. The project includes microservices for Users, Products, Orders, Payments, and an API Gateway. The services are containerized using Docker and managed with Docker Compose. The deployment is handled on Render and DOES NOT WORK PROPERLY.
-https://hl-online-shop.onrender.com/swagger/
+HL_online_shop is a microservices-based online store management system. The project includes microservices for Users, Products, Orders, Payments, and an API Gateway. The services are containerized using Docker and managed with Docker Compose. The deployment is handled on Render.
+https://hl-online-shop.onrender.com/swagger/ - DOES NOT WORK PROPERLY
 
 ## Table of Contents
 
