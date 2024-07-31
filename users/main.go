@@ -2,11 +2,14 @@ package main
 
 import (
 	_ "HL_online_shop/docs"
+	"flag"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -21,7 +24,22 @@ import (
 // @contact.email support@swagger.io
 
 func main() {
-	InitDB()
+	//InitDB()
+
+	var cfg Config
+
+	url := os.Getenv("DATABASE_URL")
+	flag.IntVar(&cfg.Port, "port", 8081, "API server port")
+	flag.StringVar(&cfg.Env, "env", "development", "Environment (development|staging|production)")
+	flag.StringVar(&cfg.Db.Dsn, "db-dsn", url, "PostgreSQL DSN")
+	flag.Parse()
+	_, err := OpenDB(cfg)
+	if err != nil {
+		log.Fatalf("could not connect to database: %v", err)
+	} else {
+		log.Println("Connected to the database")
+	}
+	defer db.Close()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/health", HealthCheck).Methods("GET")
