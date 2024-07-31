@@ -1,0 +1,180 @@
+basePath: /
+definitions:
+  main.Product:
+    properties:
+      category:
+        example: Electronics
+        type: string
+      created_at:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      description:
+        example: A high-performance laptop
+        type: string
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      name:
+        example: Laptop
+        type: string
+      price:
+        example: 1000.5
+        type: number
+      stock:
+        example: 50
+        minimum: 0
+        type: integer
+    required:
+    - category
+    - name
+    - price
+    type: object
+host: localhost:8082
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a products API.
+  title: Products API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Check the health of the service
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health Check
+      tags:
+      - health
+  /products:
+    get:
+      description: Get all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Product'
+            type: array
+      summary: Get all products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create a new product
+      parameters:
+      - description: Create product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/main.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Product'
+      summary: Create a product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: Delete a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete a product by ID
+      tags:
+      - products
+    get:
+      description: Get a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Product'
+      summary: Get a product by ID
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/main.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Product'
+      summary: Update a product by ID
+      tags:
+      - products
+  /search/products:
+    get:
+      description: Search products by name or category
+      parameters:
+      - description: Product Name
+        in: query
+        name: name
+        type: string
+      - description: Product Category
+        in: query
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Product'
+            type: array
+      summary: Search products by name or category
+      tags:
+      - products
+swagger: "2.0"

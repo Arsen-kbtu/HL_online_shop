@@ -1,0 +1,182 @@
+basePath: /
+definitions:
+  main.Order:
+    properties:
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      order_date:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      products:
+        items:
+          type: integer
+        type: array
+      status:
+        enum:
+        - new
+        - in_process
+        - completed
+        example: new
+        type: string
+      total_price:
+        example: 100.5
+        type: number
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - products
+    - status
+    - total_price
+    - user_id
+    type: object
+host: localhost:8083
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is an orders API.
+  title: Orders API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Check the health of the service
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health Check
+      tags:
+      - health
+  /orders:
+    get:
+      description: Get all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Order'
+            type: array
+      summary: Get all orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Create order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/main.Order'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Order'
+      summary: Create an order
+      tags:
+      - orders
+  /orders/{id}:
+    delete:
+      description: Delete an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete an order by ID
+      tags:
+      - orders
+    get:
+      description: Get an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Order'
+      summary: Get an order by ID
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/main.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Order'
+      summary: Update an order by ID
+      tags:
+      - orders
+  /orders/search:
+    get:
+      description: Search orders by user or status
+      parameters:
+      - description: User ID
+        in: query
+        name: user
+        type: integer
+      - description: Order Status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Order'
+            type: array
+      summary: Search orders by user or status
+      tags:
+      - orders
+swagger: "2.0"

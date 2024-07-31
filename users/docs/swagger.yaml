@@ -1,0 +1,166 @@
+basePath: /
+definitions:
+  main.User:
+    properties:
+      address:
+        example: 123 Main St
+        type: string
+      email:
+        example: john.doe@example.com
+        type: string
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      name:
+        example: John Doe
+        type: string
+      registrationAt:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      role:
+        enum:
+        - admin
+        - client
+        example: client
+        type: string
+    required:
+    - email
+    - name
+    - role
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a users API.
+  title: Users API
+  version: "1.0"
+paths:
+  /search/users:
+    get:
+      description: Search users by name or role
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Role
+        in: query
+        name: role
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.User'
+            type: array
+      summary: Search users by name or role
+      tags:
+      - users
+  /users:
+    get:
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.User'
+            type: array
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: Create user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/main.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.User'
+      summary: Create a user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete a user by ID
+      tags:
+      - users
+    get:
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.User'
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/main.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.User'
+      summary: Update a user by ID
+      tags:
+      - users
+swagger: "2.0"

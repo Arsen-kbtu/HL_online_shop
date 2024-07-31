@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # База данных PostgreSQL
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shop
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - shop-network
+
+  # Микросервис Пользователи
+  user-service:
+    build:
+      context: ./users
+    environment:
+      DATABASE_URL: $url
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    networks:
+      - shop-network
+
+#   Микросервис Товары
+  product-service:
+    build:
+      context: ./products
+    environment:
+      DATABASE_URL: $url
+    depends_on:
+      - db
+    ports:
+      - "8082:8082"
+    networks:
+        - shop-network
+
+# Микросервис Заказы
+  order-service:
+    build:
+      context: ./orders
+    environment:
+      DATABASE_URL: $url
+    depends_on:
+      - db
+    ports:
+      - "8083:8083"
+    networks:
+      - shop-network
+
+  # Микросервис Платежи
+  payment-service:
+    build:
+      context: ./payments
+    environment:
+      DATABASE_URL: $url
+    depends_on:
+      - db
+    ports:
+      - "8084:8084"
+    networks:
+      - shop-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - payment-service
+    ports:
+      - "8080:8080"
+    networks:
+        - shop-network
+
+volumes:
+  db-data:
+
+networks:
+    shop-network:
+        driver: bridge

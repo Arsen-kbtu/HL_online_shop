@@ -1,0 +1,200 @@
+basePath: /
+definitions:
+  main.Payment:
+    properties:
+      amount:
+        example: 100
+        type: number
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      order_id:
+        example: 1
+        type: integer
+      payment_date:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      status:
+        enum:
+        - successful
+        - unsuccessful
+        example: successful
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - amount
+    - order_id
+    - status
+    - user_id
+    type: object
+  main.PaymentRequest:
+    properties:
+      amount:
+        example: 100
+        type: number
+      cvc:
+        example: "636"
+        type: string
+      expDate:
+        example: "1022"
+        type: string
+      hpan:
+        example: "4003032704547597"
+        type: string
+      order_id:
+        example: 1
+        type: integer
+      terminalId:
+        example: 67e34d63-102f-4bd1-898e-370781d0074d
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - amount
+    - cvc
+    - expDate
+    - hpan
+    - order_id
+    - terminalId
+    - user_id
+    type: object
+host: localhost:8084
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a payments API.
+  title: Payments API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Check the health of the service
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health Check
+      tags:
+      - health
+  /payments:
+    get:
+      description: Get all payments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Payment'
+            type: array
+      summary: Get all payments
+      tags:
+      - payments
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment using API ePayment.kz
+      parameters:
+      - description: Create payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/main.PaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Payment'
+      summary: Create a payment
+      tags:
+      - payments
+  /payments/{id}:
+    delete:
+      description: Delete a payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete a payment by ID
+      tags:
+      - payments
+    get:
+      responses: {}
+    put:
+      consumes:
+      - application/json
+      description: Update a payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/main.Payment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Payment'
+      summary: Update a payment by ID
+      tags:
+      - payments
+  /search/payments:
+    get:
+      description: Search payments by user, order, or status
+      parameters:
+      - description: User ID
+        in: query
+        name: user
+        type: integer
+      - description: Order ID
+        in: query
+        name: order
+        type: integer
+      - description: Payment Status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Payment'
+            type: array
+      summary: Search payments by user, order, or status
+      tags:
+      - payments
+swagger: "2.0"

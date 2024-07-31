@@ -1,0 +1,670 @@
+definitions:
+  main.Order:
+    properties:
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      order_date:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      products:
+        items:
+          type: integer
+        type: array
+      status:
+        enum:
+        - new
+        - in_process
+        - completed
+        example: new
+        type: string
+      total_price:
+        example: 100.5
+        type: number
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - products
+    - status
+    - total_price
+    - user_id
+    type: object
+  main.Payment:
+    properties:
+      amount:
+        example: 100
+        type: number
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      order_id:
+        example: 1
+        type: integer
+      payment_date:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      status:
+        enum:
+        - successful
+        - unsuccessful
+        example: successful
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - amount
+    - order_id
+    - status
+    - user_id
+    type: object
+  main.PaymentRequest:
+    properties:
+      amount:
+        example: 100
+        type: number
+      cvc:
+        example: "636"
+        type: string
+      expDate:
+        example: "1022"
+        type: string
+      hpan:
+        example: "4003032704547597"
+        type: string
+      order_id:
+        example: 1
+        type: integer
+      terminalId:
+        example: 67e34d63-102f-4bd1-898e-370781d0074d
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - amount
+    - cvc
+    - expDate
+    - hpan
+    - order_id
+    - terminalId
+    - user_id
+    type: object
+  main.Product:
+    properties:
+      category:
+        example: Electronics
+        type: string
+      created_at:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      description:
+        example: A high-performance laptop
+        type: string
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      name:
+        example: Laptop
+        type: string
+      price:
+        example: 1000.5
+        type: number
+      stock:
+        example: 50
+        minimum: 0
+        type: integer
+    required:
+    - category
+    - name
+    - price
+    type: object
+  main.User:
+    properties:
+      address:
+        example: 123 Main St
+        type: string
+      email:
+        example: john.doe@example.com
+        type: string
+      id:
+        example: 1
+        readOnly: true
+        type: integer
+      name:
+        example: John Doe
+        type: string
+      registrationAt:
+        example: "2023-07-20T15:04:05Z"
+        readOnly: true
+        type: string
+      role:
+        enum:
+        - admin
+        - client
+        example: client
+        type: string
+    required:
+    - email
+    - name
+    - role
+    type: object
+info:
+  contact: {}
+paths:
+  /health:
+    get:
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - Health
+  /orders:
+    get:
+      description: Get all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Order'
+            type: array
+      summary: Get all orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Create order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/main.Order'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Order'
+      summary: Create an order
+      tags:
+      - orders
+  /orders/{id}:
+    delete:
+      description: Delete an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete an order by ID
+      tags:
+      - orders
+    get:
+      description: Get an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Order'
+      summary: Get an order by ID
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/main.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Order'
+      summary: Update an order by ID
+      tags:
+      - orders
+  /payments:
+    get:
+      description: Get all payments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Payment'
+            type: array
+      summary: Get all payments
+      tags:
+      - payments
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment using API ePayment.kz
+      parameters:
+      - description: Create payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/main.PaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Payment'
+      summary: Create a payment
+      tags:
+      - payments
+  /payments/{id}:
+    delete:
+      description: Delete a payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete a payment by ID
+      tags:
+      - payments
+    get:
+      description: Get a payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Payment'
+      summary: Get a payment by ID
+      tags:
+      - payments
+    put:
+      consumes:
+      - application/json
+      description: Update a payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/main.Payment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Payment'
+      summary: Update a payment by ID
+      tags:
+      - payments
+  /products:
+    get:
+      description: Get all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Product'
+            type: array
+      summary: Get all products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create a new product
+      parameters:
+      - description: Create product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/main.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Product'
+      summary: Create a product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: Delete a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete a product by ID
+      tags:
+      - products
+    get:
+      description: Get a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Product'
+      summary: Get a product by ID
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/main.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Product'
+      summary: Update a product by ID
+      tags:
+      - products
+  /search/orders:
+    get:
+      description: Search orders by user or status
+      parameters:
+      - description: User ID
+        in: query
+        name: user
+        type: integer
+      - description: Order Status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Order'
+            type: array
+      summary: Search orders by user or status
+      tags:
+      - orders
+  /search/payments:
+    get:
+      description: Search payments by user, order, or status
+      parameters:
+      - description: User ID
+        in: query
+        name: user
+        type: integer
+      - description: Order ID
+        in: query
+        name: order
+        type: integer
+      - description: Payment Status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Payment'
+            type: array
+      summary: Search payments by user, order, or status
+      tags:
+      - payments
+  /search/products:
+    get:
+      description: Search products by name or category
+      parameters:
+      - description: Product Name
+        in: query
+        name: name
+        type: string
+      - description: Product Category
+        in: query
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Product'
+            type: array
+      summary: Search products by name or category
+      tags:
+      - products
+  /search/users:
+    get:
+      description: Search users by name or role
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Role
+        in: query
+        name: role
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.User'
+            type: array
+      summary: Search users by name or role
+      tags:
+      - users
+  /users:
+    get:
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.User'
+            type: array
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: Create user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/main.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.User'
+      summary: Create a user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete a user by ID
+      tags:
+      - users
+    get:
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.User'
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/main.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.User'
+      summary: Update a user by ID
+      tags:
+      - users
+swagger: "2.0"
