@@ -23,7 +23,18 @@ func InitDB() {
 		log.Fatal("failed to connect to the database:", err)
 	}
 
-	db.Table("products_shop").AutoMigrate(&Product{})
+	err = db.Table("products_shop").AutoMigrate(&Product{})
+	if err != nil {
+		log.Fatal("failed to migrate the database:", err)
+	}
+
+}
+
+func TestDB() {
+	if err := db.Exec("SELECT 1").Error; err != nil {
+		log.Fatal("failed to connect to the database:", err)
+	}
+
 }
 
 func GetAllProductsRepo() ([]Product, error) {

@@ -40,6 +40,19 @@ info:
   title: Users API
   version: "1.0"
 paths:
+  /health:
+    get:
+      description: Check if the service is up
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - health
   /search/users:
     get:
       description: Search users by name or role

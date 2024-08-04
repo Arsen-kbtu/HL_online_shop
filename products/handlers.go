@@ -23,6 +23,10 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
 
+func Test(w http.ResponseWriter, r *http.Request) {
+	TestDB()
+}
+
 // GetProducts godoc
 // @Summary Get all products
 // @Description Get all products

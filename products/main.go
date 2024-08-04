@@ -24,6 +24,7 @@ func main() {
 	InitDB()
 
 	r := mux.NewRouter()
+	r.HandleFunc("/test", Test).Methods("GET")
 	r.HandleFunc("/health", HealthCheck).Methods("GET")
 	r.HandleFunc("/products", GetProducts).Methods("GET")
 	r.HandleFunc("/products", CreateProduct).Methods("POST")

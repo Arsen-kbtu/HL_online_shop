@@ -7,10 +7,18 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 var validate = *validator.New()
 
+// HealthCheck godoc
+// @Summary Health check
+// @Description Check if the service is up
+// @Tags health
+// @Produce plain
+// @Success 200 {string} string "OK"
+// @Router /health [get]
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("OK"))
@@ -52,8 +60,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-
 	}
+
+	user.RegistrationAt = time.Now()
+
 	if err := CreateUserRepo(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

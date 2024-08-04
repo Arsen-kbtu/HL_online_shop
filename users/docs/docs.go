@@ -19,6 +19,26 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/health": {
+            "get": {
+                "description": "Check if the service is up",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/search/users": {
             "get": {
                 "description": "Search users by name or role",
